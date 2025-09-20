@@ -1,6 +1,26 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# =================================================================
+# Environment Variables & Secrets (SECURITY CRITICAL)
+# =================================================================
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+*.crt       # SSL certificates
+*.p12       # PKCS#12 key stores
+*.bak       # backup files sometimes contain credentials
+id.json     # Solana keypairs
+*-keypair.json
+*.wallet
+service-account*.json
+gcp-*.json
+
+# =================================================================
+# Dependencies & Package Management
+# =================================================================
 /node_modules
 /.pnp
 .pnp.*
@@ -9,33 +29,152 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+package-lock.json.bak
+yarn.lock.bak
 
-# testing
+# =================================================================
+# Testing & Coverage
+# =================================================================
 /coverage
+*.lcov
+/test-results/
+/playwright-report/
+/test-output/
+.nyc_output
 
-# next.js
+# =================================================================
+# Next.js Build Artifacts
+# =================================================================
 /.next/
 /out/
-
-# production
 /build
+*.tsbuildinfo
+next-env.d.ts
 
-# misc
+# =================================================================
+# Documentation (Allow structured docs, exclude potentially sensitive files)
+# =================================================================
+*.md
+!README.md
+!docs/
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+!SECURITY.md
+!LICENSE.md
+*.msg        # Outlook message files (may contain sensitive info)
+*.eml        # Email files
+
+# =================================================================
+# IDE / Editor Files
+# =================================================================
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.vim
+.emacs.d
+.atom
+
+# =================================================================
+# Operating System Files
+# =================================================================
 .DS_Store
-*.pem
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
 
-# debug
+# =================================================================
+# Logs & Debug Files
+# =================================================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
 
-# env files (can opt-in for committing if needed)
-.env*
+# =================================================================
+# Docker & Container Files
+# =================================================================
+.dockerignore.bak
+docker-compose.override.yml
+.docker/
 
-# vercel
+# =================================================================
+# Cloud & Deployment
+# =================================================================
 .vercel
+.gcp/
+.aws/
+terraform.tfstate*
+.terraform/
+*.tfvars
+ansible.cfg
+inventory
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# =================================================================
+# Database & Storage
+# =================================================================
+*.sqlite
+*.sqlite3
+*.db
+*.rdb
+dump.rdb
+*.dump
+
+# =================================================================
+# Temporary & Cache Files
+# =================================================================
+.tmp/
+.cache/
+.parcel-cache/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# =================================================================
+# Blockchain & Crypto Files
+# =================================================================
+target/      # Rust/Anchor build artifacts
+.anchor/
+programs/**/target/
+test-ledger/
+validator-*
+*.so        # Solana program binaries (keep source, not compiled)
+Anchor.toml.bak
+
+# =================================================================
+# AI/ML Model Files (Large files that shouldn't be in git)
+# =================================================================
+*.model
+*.pkl
+*.h5
+*.pb
+models/
+checkpoints/
+*.onnx
+*.tflite
+
+# =================================================================
+# gTek CHIPS Specific
+# =================================================================
+databank/local/
+monitoring/data/
+scripts/local/
+backup/
+*.humanitarian-backup
