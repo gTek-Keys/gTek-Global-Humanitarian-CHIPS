@@ -1,0 +1,71 @@
+# gTek Global Humanitarian CHIPS - Docker Build Ignore
+# Exclude unnecessary files from Docker build context
+
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (contain secrets)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Next.js build outputs
+.next/
+out/
+
+# Production build
+build/
+dist/
+
+# Cache
+.cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git files
+.git/
+.gitignore
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Documentation
+*.md
+docs/
+
+# Temporary files
+tmp/
+temp/

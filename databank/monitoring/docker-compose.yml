@@ -1,0 +1,106 @@
+# gTek Global Cyber Databank - Monitoring Configuration
+# Grafana dashboard configuration for security and compliance monitoring
+
+version: "3.8"
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gtek-databank-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=gtek_admin_2025
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=db.gfyrgwxnokkvobqcezad.supabase.co:5432
+      - GF_DATABASE_NAME=postgres
+      - GF_DATABASE_USER=postgres
+      - GF_DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - GF_AUTH_GOOGLE_ENABLED=true
+      - GF_AUTH_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GF_AUTH_GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GF_AUTH_GOOGLE_ALLOWED_DOMAINS=gtekglobal.design
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - gtek-monitoring
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`monitoring.gtek.global`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gtek-databank-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.enable-lifecycle'
+    networks:
+      - gtek-monitoring
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: gtek-postgres-exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:${POSTGRES_PASSWORD}@db.gfyrgwxnokkvobqcezad.supabase.co:5432/postgres?sslmode=require
+    ports:
+      - "9187:9187"
+    networks:
+      - gtek-monitoring
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: gtek-databank-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager-data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - gtek-monitoring
+
+  traefik:
+    image: traefik:v2.5
+    container_name: gtek-traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=collabnonfablab@gtekglobal.design"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt-data:/letsencrypt
+    networks:
+      - gtek-monitoring
+
+volumes:
+  grafana-data:
+  prometheus-data:
+  alertmanager-data:
+  letsencrypt-data:
+
+networks:
+  gtek-monitoring:
+    driver: bridge

@@ -1,0 +1,128 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "gTek Databank - Security Overview",
+    "tags": ["gtek", "security", "audit"],
+    "timezone": "UTC",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Authentication Activity",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(failed_login_attempts_total[5m]))",
+            "legendFormat": "Failed Logins/min"
+          },
+          {
+            "expr": "sum(rate(successful_logins_total[5m]))", 
+            "legendFormat": "Successful Logins/min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 5},
+                {"color": "red", "value": 10}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "File Operations Timeline",
+        "type": "graph",
+        "targets": [
+          {
+            "rawSql": "SELECT timestamp, action, COUNT(*) FROM security_audit.audit_logs WHERE action IN ('UPLOAD', 'DOWNLOAD', 'DELETE') AND $__timeFilter(timestamp) GROUP BY timestamp, action ORDER BY timestamp",
+            "format": "time_series"
+          }
+        ],
+        "xAxis": {"mode": "time"},
+        "yAxes": [
+          {"label": "Operations Count", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Security Violations",
+        "type": "table",
+        "targets": [
+          {
+            "rawSql": "SELECT actor_email, action, resource_path, timestamp FROM security_audit.audit_logs WHERE severity IN ('HIGH', 'CRITICAL') AND $__timeFilter(timestamp) ORDER BY timestamp DESC LIMIT 50",
+            "format": "table"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Storage Usage by User",
+        "type": "piechart",
+        "targets": [
+          {
+            "rawSql": "SELECT actor_email, SUM(CAST(metadata->>'file_size' AS bigint)) as storage_used FROM security_audit.audit_logs WHERE action = 'UPLOAD' AND $__timeFilter(timestamp) GROUP BY actor_email ORDER BY storage_used DESC LIMIT 10",
+            "format": "table"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 5,
+        "title": "Compliance Events",
+        "type": "logs",
+        "targets": [
+          {
+            "rawSql": "SELECT timestamp, event_type, actor_email, description FROM security_audit.compliance_events WHERE $__timeFilter(timestamp) ORDER BY timestamp DESC",
+            "format": "table"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 6,
+        "title": "Active User Sessions",
+        "type": "stat",
+        "targets": [
+          {
+            "rawSql": "SELECT COUNT(DISTINCT user_email) FROM security_audit.user_sessions WHERE is_active = true",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "value"},
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 24}
+      },
+      {
+        "id": 7,
+        "title": "Data Retention Status",
+        "type": "bargauge",
+        "targets": [
+          {
+            "rawSql": "SELECT status, COUNT(*) FROM security_audit.retention_tracking GROUP BY status",
+            "format": "table"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 24}
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "version": 1
+  }
+}

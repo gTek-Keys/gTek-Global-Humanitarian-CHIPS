@@ -1,0 +1,103 @@
+version: "1.0"
+project: gtek-global-cyber-databank
+description: >
+  IEEE + Red Hat aligned Supabase + Google Cloud Databank
+  for secure storage, auditing, and analytics under gtek.global.
+
+organization:
+  domain: gtekglobal.design
+  workspace_admin: collabnonfablab@gtekglobal.design
+  gcp_org_id: TBD # Will be populated after org creation
+
+projects:
+  core:
+    id: gtek-databank-core
+    description: Core databank infrastructure
+    services:
+      - storage.googleapis.com
+      - iam.googleapis.com
+      - cloudkms.googleapis.com
+      - logging.googleapis.com
+  analytics:
+    id: gtek-databank-analytics  
+    description: Analytics and reporting
+    services:
+      - bigquery.googleapis.com
+      - monitoring.googleapis.com
+  audit:
+    id: gtek-databank-audit
+    description: Security auditing and compliance
+    services:
+      - logging.googleapis.com
+      - cloudaudit.googleapis.com
+
+service_accounts:
+  databank_sa:
+    name: gtek-databank-sa
+    display_name: gTek Databank Service Account
+    roles:
+      - roles/storage.admin
+      - roles/logging.admin
+      - roles/iam.securityAdmin
+      - roles/cloudkms.cryptoKeyEncrypterDecrypter
+
+org_roles:
+  TrustPresident:
+    members:
+      - collabnonfablab@gtekglobal.design
+    role: roles/owner
+  LeadEngineer:
+    members: []
+    role: roles/editor
+  Researcher:
+    members: []
+    role: roles/viewer
+  Investor:
+    members: []
+    role: roles/viewer
+
+storage:
+  primary_bucket:
+    name: databank.gtek.global
+    location: us-multi
+    storage_class: STANDARD
+    uniform_bucket_level_access: true
+    versioning: true
+    retention_policy:
+      retention_period: 2555 # 7 years in days
+    encryption:
+      type: customer-managed
+      kms_key_name: projects/gtek-databank-core/locations/global/keyRings/gtek-databank/cryptoKeys/gtek-databank-key
+
+supabase:
+  project_name: gtek-databank
+  region: us-east-1
+  auth:
+    provider: saml
+    domain: gtekglobal.design
+    external_url: https://databank.gtek.global
+  database:
+    schema: security_audit
+    row_level_security: true
+    backup_schedule: daily
+
+security_policies:
+  context_aware_access: true
+  enforce_2fa: true
+  restrict_public_access: true
+  vpc_sc_enabled: true
+  audit_log_retention_days: 2555
+
+monitoring:
+  bigquery:
+    dataset: gtek_databank_metrics
+    location: US
+  dashboards:
+    grafana:
+      enabled: true
+      panels:
+        - uploads_per_user
+        - failed_logins
+        - file_type_distribution
+        - storage_usage_trends
+        - security_violations

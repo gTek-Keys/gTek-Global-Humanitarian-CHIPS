@@ -1,0 +1,195 @@
+{
+  "workspaces": [
+    {
+      "name": "🌐 Frontend - Humanitarian Platform",
+      "description": "Next.js application, pages, components, and UI logic",
+      "folders": [
+        "src/",
+        "public/",
+        "tests/"
+      ],
+      "files": [
+        "next.config.ts",
+        "package.json",
+        "tsconfig.json",
+        "eslint.config.mjs",
+        "postcss.config.mjs"
+      ],
+      "patterns": [
+        "src/**/*.{tsx,ts,jsx,js,css}",
+        "public/**/*",
+        "tests/**/*"
+      ]
+    },
+    {
+      "name": "🏗️ Infrastructure - DevOps & Deployment",
+      "description": "Docker containers, CI/CD, cloud deployment, and automation scripts",
+      "folders": [
+        "scripts/",
+        ".vscode/"
+      ],
+      "files": [
+        "Dockerfile",
+        "Dockerfile.simple",
+        ".dockerignore",
+        "docker-deployment.md"
+      ],
+      "patterns": [
+        "Dockerfile*",
+        "docker-compose*.yml",
+        "scripts/**/*.sh",
+        ".github/**/*",
+        "*.md"
+      ]
+    },
+    {
+      "name": "🛡️ Data & Security - Databank",
+      "description": "Supabase database, security schemas, monitoring, and data infrastructure",
+      "folders": [
+        "databank/"
+      ],
+      "files": [
+        ".env.example",
+        "databank/README.md",
+        "databank/Dockerfile",
+        "databank/gtek-databank-config.yaml"
+      ],
+      "patterns": [
+        "databank/**/*.sql",
+        "databank/**/*.yml",
+        "databank/**/*.yaml",
+        "databank/**/*.json",
+        "databank/monitoring/**/*",
+        "databank/scripts/**/*"
+      ]
+    }
+  ],
+  "views": {
+    "repositories": {
+      "showBranchComparison": "working",
+      "showUpstreamStatus": true,
+      "compact": false,
+      "branches": {
+        "layout": "tree",
+        "showBranchComparison": "working"
+      }
+    },
+    "fileHistory": {
+      "enabled": true,
+      "avatar": true
+    },
+    "lineHistory": {
+      "enabled": true,
+      "avatar": true
+    },
+    "compare": {
+      "enabled": true,
+      "location": "panel"
+    },
+    "search": {
+      "enabled": true,
+      "location": "panel"
+    }
+  },
+  "codeLens": {
+    "enabled": true,
+    "authors": {
+      "enabled": true,
+      "command": "gitlens.toggleFileBlame"
+    },
+    "recentChange": {
+      "enabled": true,
+      "command": "gitlens.showQuickCommitDetails"
+    },
+    "scm": {
+      "enabled": true
+    }
+  },
+  "currentLine": {
+    "enabled": true,
+    "pullRequests": {
+      "enabled": true
+    }
+  },
+  "hovers": {
+    "enabled": true,
+    "annotations": {
+      "changes": true,
+      "details": true,
+      "over": "line"
+    },
+    "currentLine": {
+      "enabled": true,
+      "over": "line"
+    },
+    "avatars": true,
+    "pullRequests": {
+      "enabled": true
+    }
+  },
+  "blame": {
+    "avatars": true,
+    "compact": false,
+    "dateFormat": "MMMM Do, YYYY h:mma",
+    "format": "${message|50?} ${agoOrDate|14-}",
+    "heatmap": {
+      "enabled": true,
+      "location": "right"
+    },
+    "highlight": {
+      "enabled": true,
+      "locations": [
+        "gutter",
+        "line",
+        "overview"
+      ]
+    },
+    "ignoreWhitespace": false,
+    "separateLines": true,
+    "toggleMode": "window"
+  },
+  "statusBar": {
+    "enabled": true,
+    "alignment": "right",
+    "command": "gitlens.showQuickCommitDetails",
+    "format": "${author|18-} ${agoOrDate}",
+    "pullRequests": {
+      "enabled": true
+    }
+  },
+  "gitCommands": {
+    "closeOnFocusOut": true,
+    "search": {
+      "matchAll": false,
+      "matchCase": false,
+      "matchRegex": true,
+      "showResultsInSideBar": false
+    },
+    "skipConfirmations": [
+      "fetch:command",
+      "stash-push:command",
+      "switch:command",
+      "tag:command"
+    ]
+  },
+  "integrations": {
+    "enabled": true
+  },
+  "liveshare": {
+    "allowGuestAccess": true
+  },
+  "remotes": [
+    {
+      "type": "GitHub",
+      "domain": "github.com",
+      "name": "GitHub"
+    }
+  ],
+  "defaultGravatarsStyle": "identicon",
+  "outputLevel": "errors",
+  "showWelcomeOnInstall": false,
+  "showWhatsNewAfterUpgrades": false,
+  "plusFeatures": {
+    "enabled": true
+  }
+}

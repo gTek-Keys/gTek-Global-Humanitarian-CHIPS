@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Docker Build & Push",
+      "type": "shell",
+      "command": "docker build -t gcr.io/gtek-global/gtek-app . && docker push gcr.io/gtek-global/gtek-app",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Deploy to Cloud Run",
+      "type": "shell",
+      "command": "gcloud run deploy gtek-app --image gcr.io/gtek-global/gtek-app --region us-central1 --platform managed --allow-unauthenticated --port 3000",
+      "group": "none",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "dependsOn": "Docker Build & Push",
+      "problemMatcher": []
+    },
+    {
+      "label": "Full Deploy Pipeline",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Docker Build & Push",
+        "Deploy to Cloud Run"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Build & Push to GHCR",
+      "type": "shell",
+      "command": "./scripts/ghcr-login.sh && docker build -t ghcr.io/gtek-keys/gtek-app . && docker push ghcr.io/gtek-keys/gtek-app",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
