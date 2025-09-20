@@ -1,0 +1,22 @@
+# Ignore everything by default
+**
+
+# But include these files/directories
+!package.json
+!package-lock.json
+!next.config.ts
+!tsconfig.json
+!postcss.config.mjs
+!eslint.config.mjs
+!public/
+!src/
+
+# Exclude specific files from included directories
+.git
+.next
+node_modules
+npm-debug.log*
+.DS_Store
+*.tsbuildinfo
+.env*
+README.md
