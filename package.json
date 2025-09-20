@@ -6,7 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "playwright test",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "prepare": "husky install",
+    "setup:gcp": "bash ./scripts/setup-gcp-infrastructure.sh",
+    "setup:supabase": "bash ./scripts/setup-supabase.sh"
   },
   "dependencies": {
     "react": "19.1.0",
