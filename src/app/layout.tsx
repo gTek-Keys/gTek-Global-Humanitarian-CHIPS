@@ -8,8 +8,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "gTek Global Humanitarian CHIPS",
-  description: "Open Educational Infrastructure for Humanitarian Innovation",
+  title: "Saqqara-Giza Blueprint | Polymath Vizier Services",
+  description: "Architect your digital pyramid with legendary precision. Transform visionary concepts into eternal monuments in the modern world.",
+  keywords: "digital architecture, content creation, branding, multimedia, global distribution, polymath vizier",
+  authors: [{ name: "Jerome Elston Hill Jr." }],
+  creator: "Home Made Productions (EIN: 88-3480907)",
+  publisher: "BFH Trust Designs",
 };
 
 export default function RootLayout({

@@ -1,0 +1,45 @@
+openapi: 3.1.0
+info:
+  title: gTek Global Humanitarian CHIPS API
+  version: 1.0.0
+  description: API for the fullstack AI-powered design suite
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://gtek-global-humanitarian-chips.vercel.app
+    description: Production server
+
+paths:
+  /api/generate-design:
+    post:
+      summary: Generate design suggestions
+      description: Uses AI to generate design concepts based on a text prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                  description: The design prompt
+              required:
+                - prompt
+      responses:
+        '200':
+          description: Successful design generation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  output:
+                    type: string
+                  layout:
+                    type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error

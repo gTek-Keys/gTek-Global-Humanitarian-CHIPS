@@ -77,9 +77,12 @@ npm run dev
 ## 🏗️ **Technical Architecture**
 
 ### **Frontend Stack**
-- **Next.js 14**: React framework with App Router
+- **Next.js 15**: React framework with App Router
 - **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
+- **Tailwind CSS**: Utility-first styling with shadcn/ui components
+- **Framer Motion**: Smooth animations and transitions
+- **AI Design Suite**: Generative design engine for UI/UX creation
+- **Responsive Tables**: TanStack Table and Grid.js for data display
 - **Web3 Integration**: MetaMask + Solana wallet support
 
 ### **Backend Infrastructure**
