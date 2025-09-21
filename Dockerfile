@@ -14,8 +14,8 @@ COPY next.config.ts ./
 COPY postcss.config.mjs ./
 COPY eslint.config.mjs ./
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies (including dev dependencies for build)
+RUN npm ci && npm cache clean --force
 
 # Copy source code
 COPY src/ ./src/
