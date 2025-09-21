@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable standalone build for Docker
-  output: 'standalone',
+  // Optimize for Vercel serverless
+  
+  // External packages for server components
+  serverExternalPackages: ['@supabase/supabase-js'],
   
   // Optimize images
   images: {
@@ -37,9 +39,6 @@ const nextConfig: NextConfig = {
   env: {
     CUSTOM_KEY: 'gtek-global-humanitarian-chips',
   },
-  
-  // External packages for server components
-  serverExternalPackages: ['@supabase/supabase-js'],
 };
 
 export default nextConfig;

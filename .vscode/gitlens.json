@@ -1,94 +1,35 @@
 {
-  "workspaces": [
-    {
-      "name": "🌐 Frontend - Humanitarian Platform",
-      "description": "Next.js application, pages, components, and UI logic",
-      "folders": [
-        "src/",
-        "public/",
-        "tests/"
-      ],
-      "files": [
-        "next.config.ts",
-        "package.json",
-        "tsconfig.json",
-        "eslint.config.mjs",
-        "postcss.config.mjs"
-      ],
-      "patterns": [
-        "src/**/*.{tsx,ts,jsx,js,css}",
-        "public/**/*",
-        "tests/**/*"
-      ]
-    },
-    {
-      "name": "🏗️ Infrastructure - DevOps & Deployment",
-      "description": "Docker containers, CI/CD, cloud deployment, and automation scripts",
-      "folders": [
-        "scripts/",
-        ".vscode/"
-      ],
-      "files": [
-        "Dockerfile",
-        "Dockerfile.simple",
-        ".dockerignore",
-        "docker-deployment.md"
-      ],
-      "patterns": [
-        "Dockerfile*",
-        "docker-compose*.yml",
-        "scripts/**/*.sh",
-        ".github/**/*",
-        "*.md"
-      ]
-    },
-    {
-      "name": "🛡️ Data & Security - Databank",
-      "description": "Supabase database, security schemas, monitoring, and data infrastructure",
-      "folders": [
-        "databank/"
-      ],
-      "files": [
-        ".env.example",
-        "databank/README.md",
-        "databank/Dockerfile",
-        "databank/gtek-databank-config.yaml"
-      ],
-      "patterns": [
-        "databank/**/*.sql",
-        "databank/**/*.yml",
-        "databank/**/*.yaml",
-        "databank/**/*.json",
-        "databank/monitoring/**/*",
-        "databank/scripts/**/*"
-      ]
+  "licenseKey": "6320711a-30c6-4260-b770-e4cb6272c3a9",
+  "premium": {
+    "enabled": true,
+    "features": {
+      "timeline": true,
+      "workspaces": true,
+      "focus": true,
+      "deepLinks": true,
+      "launchpad": true
     }
-  ],
-  "views": {
-    "repositories": {
-      "showBranchComparison": "working",
-      "showUpstreamStatus": true,
-      "compact": false,
-      "branches": {
-        "layout": "tree",
-        "showBranchComparison": "working"
-      }
-    },
-    "fileHistory": {
+  },
+  "plusFeatures": {
+    "enabled": true
+  },
+  "advanced": {
+    "repositorySearchDepth": 3,
+    "fileHistoryFollowsRenames": true,
+    "similarityThreshold": 50
+  },
+  "blame": {
+    "highlight": {
       "enabled": true,
-      "avatar": true
+      "locations": ["gutter", "line", "overview"]
     },
-    "lineHistory": {
+    "avatars": true,
+    "compact": false,
+    "dateFormat": "MMMM Do, YYYY h:mma",
+    "format": "${author|10} ${agoOrDate|14-} ${message}",
+    "heatmap": {
       "enabled": true,
-      "avatar": true
-    },
-    "compare": {
-      "enabled": true,
-      "location": "panel"
-    },
-    "search": {
-      "enabled": true,
-      "location": "panel"
+      "location": "right"
     }
   },
   "codeLens": {
@@ -101,9 +42,7 @@
       "enabled": true,
       "command": "gitlens.showQuickCommitDetails"
     },
-    "scm": {
-      "enabled": true
-    }
+    "scopes": ["document"]
   },
   "currentLine": {
     "enabled": true,
@@ -127,56 +66,53 @@
       "enabled": true
     }
   },
-  "blame": {
-    "avatars": true,
-    "compact": false,
-    "dateFormat": "MMMM Do, YYYY h:mma",
-    "format": "${message|50?} ${agoOrDate|14-}",
-    "heatmap": {
-      "enabled": true,
-      "location": "right"
+  "views": {
+    "branches": {
+      "showBranchComparison": "working"
     },
-    "highlight": {
-      "enabled": true,
-      "locations": [
-        "gutter",
-        "line",
-        "overview"
-      ]
+    "commits": {
+      "showBranchComparison": "working"
     },
-    "ignoreWhitespace": false,
-    "separateLines": true,
-    "toggleMode": "window"
-  },
-  "statusBar": {
-    "enabled": true,
-    "alignment": "right",
-    "command": "gitlens.showQuickCommitDetails",
-    "format": "${author|18-} ${agoOrDate}",
-    "pullRequests": {
-      "enabled": true
+    "fileHistory": {
+      "enabled": true,
+      "avatars": true
+    },
+    "lineHistory": {
+      "enabled": true,
+      "avatars": true
+    },
+    "repositories": {
+      "enabled": true,
+      "autoRefresh": true
+    },
+    "timeline": {
+      "enabled": true,
+      "avatars": true
     }
   },
-  "gitCommands": {
-    "closeOnFocusOut": true,
-    "search": {
-      "matchAll": false,
-      "matchCase": false,
-      "matchRegex": true,
-      "showResultsInSideBar": false
+  "graph": {
+    "layout": "editor",
+    "minimap": {
+      "enabled": true
     },
-    "skipConfirmations": [
-      "fetch:command",
-      "stash-push:command",
-      "switch:command",
-      "tag:command"
-    ]
+    "pullRequests": {
+      "enabled": true
+    },
+    "scrollRowPadding": 2,
+    "showGhostRefsOnRowHover": true,
+    "showRemoteNames": true
   },
   "integrations": {
-    "enabled": true
-  },
-  "liveshare": {
-    "allowGuestAccess": true
+    "enabled": true,
+    "github": {
+      "enabled": true,
+      "pullRequests": {
+        "enabled": true
+      },
+      "issues": {
+        "enabled": true
+      }
+    }
   },
   "remotes": [
     {
@@ -188,8 +124,5 @@
   "defaultGravatarsStyle": "identicon",
   "outputLevel": "errors",
   "showWelcomeOnInstall": false,
-  "showWhatsNewAfterUpgrades": false,
-  "plusFeatures": {
-    "enabled": true
-  }
+  "showWhatsNewAfterUpgrades": false
 }

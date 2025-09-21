@@ -178,3 +178,10 @@ monitoring/data/
 scripts/local/
 backup/
 *.humanitarian-backup
+
+# =================================================================
+# Scripts & Executables
+# =================================================================
+# Keep scripts executable but ignore local configurations
+scripts/*.local
+scripts/temp/
