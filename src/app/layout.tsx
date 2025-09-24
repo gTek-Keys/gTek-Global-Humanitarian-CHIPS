@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Jerome Elston Hill Jr." }],
   creator: "Home Made Productions (EIN: 88-3480907)",
   publisher: "BFH Trust Designs",
+  other: {
+    "mongodb-site-verification": "27obWI3GTL2TPTTML2EOcS45IXoKYqN9"
+  }
 };
 
 export default function RootLayout({
