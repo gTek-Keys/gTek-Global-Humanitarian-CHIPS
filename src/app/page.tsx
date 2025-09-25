@@ -2,118 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface Project {
-  id: number;
-  name: string;
-  description: string;
-  location: string;
-  beneficiaries: number;
-  status: 'Active' | 'In Progress' | 'Planning';
-  impact: string;
-  category: string;
-  icon: string;
-  color: string;
-}
-
-const projectsData: Project[] = [
-  {
-    id: 1,
-    name: 'Clean Water Initiative',
-    description: 'Sustainable water infrastructure and purification systems',
-    location: 'Kenya, East Africa',
-    beneficiaries: 45000,
-    status: 'Active',
-    impact: '92%',
-    category: 'Infrastructure',
-    icon: '💧',
-    color: 'from-blue-500 to-cyan-500'
-  },
-  {
-    id: 2,
-    name: 'Education for All',
-    description: 'Digital learning platform with AI-powered tutoring',
-    location: 'Bangladesh, South Asia',
-    beneficiaries: 120000,
-    status: 'In Progress',
-    impact: '87%',
-    category: 'Education',
-    icon: '📚',
-    color: 'from-purple-500 to-pink-500'
-  },
-  {
-    id: 3,
-    name: 'Healthcare Access',
-    description: 'Mobile clinic deployment with telemedicine',
-    location: 'Rural Brazil',
-    beneficiaries: 25000,
-    status: 'Planning',
-    impact: '--',
-    category: 'Healthcare',
-    icon: '🏥',
-    color: 'from-green-500 to-emerald-500'
-  },
-  {
-    id: 4,
-    name: 'Food Security Program',
-    description: 'Agricultural development and food distribution',
-    location: 'Mali, West Africa',
-    beneficiaries: 78000,
-    status: 'Active',
-    impact: '89%',
-    category: 'Agriculture',
-    icon: '🌾',
-    color: 'from-amber-500 to-orange-500'
-  },
-  {
-    id: 5,
-    name: 'Digital Literacy',
-    description: 'Technology training and digital skills development',
-    location: 'Philippines, Southeast Asia',
-    beneficiaries: 95000,
-    status: 'In Progress',
-    impact: '76%',
-    category: 'Education',
-    icon: '💻',
-    color: 'from-indigo-500 to-purple-500'
-  },
-  {
-    id: 6,
-    name: 'Renewable Energy Access',
-    description: 'Solar power installation for rural communities',
-    location: 'Ghana, West Africa',
-    beneficiaries: 35000,
-    status: 'Active',
-    impact: '95%',
-    category: 'Infrastructure',
-    icon: '☀️',
-    color: 'from-yellow-500 to-amber-500'
-  },
-  {
-    id: 7,
-    name: 'Women Empowerment',
-    description: 'Skills training and microfinance initiatives',
-    location: 'India, South Asia',
-    beneficiaries: 85000,
-    status: 'In Progress',
-    impact: '83%',
-    category: 'Economic Development',
-    icon: '👩‍💼',
-    color: 'from-rose-500 to-pink-500'
-  },
-  {
-    id: 8,
-    name: 'Climate Resilience',
-    description: 'Disaster preparedness and climate adaptation',
-    location: 'Indonesia, Southeast Asia',
-    beneficiaries: 67000,
-    status: 'Planning',
-    impact: '--',
-    category: 'Environment',
-    icon: '🌱',
-    color: 'from-teal-500 to-green-500'
-  }
-];
+import { Project } from '../types';
+import { projectsData } from '../data';
+import { calculateStats, getStatusColor, sortProjects, filterProjects } from '../lib/project-utils';
+import LoadingSpinner from '../components/LoadingSpinner';
+import StatsCard from '../components/StatsCard';
+import ProjectCard from '../components/ProjectCard';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -129,53 +23,11 @@ export default function Home() {
   }, []);
 
   const filteredAndSortedProjects = useMemo(() => {
-    const filtered = projectsData.filter(project =>
-      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    filtered.sort((a, b) => {
-      let aValue: string | number = a[sortBy];
-      let bValue: string | number = b[sortBy];
-
-      if (sortBy === 'beneficiaries') {
-        aValue = a.beneficiaries;
-        bValue = b.beneficiaries;
-      }
-
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        const comparison = aValue.localeCompare(bValue);
-        return sortOrder === 'asc' ? comparison : -comparison;
-      }
-
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-
-      return 0;
-    });
-
-    return filtered;
+    const filtered = filterProjects(projectsData, searchTerm);
+    return sortProjects(filtered, sortBy, sortOrder);
   }, [searchTerm, sortBy, sortOrder]);
 
-  const stats = useMemo(() => {
-    const totalBeneficiaries = projectsData.reduce((sum, project) => sum + project.beneficiaries, 0);
-    const activeProjects = projectsData.filter(p => p.status === 'Active').length;
-    const totalProjects = projectsData.length;
-    const avgImpact = projectsData
-      .filter(p => p.impact !== '--')
-      .reduce((sum, p) => sum + parseFloat(p.impact), 0) /
-      projectsData.filter(p => p.impact !== '--').length;
-
-    return {
-      beneficiaries: totalBeneficiaries.toLocaleString(),
-      activeProjects,
-      totalProjects,
-      avgImpact: avgImpact.toFixed(1) + '%'
-    };
-  }, []);
+  const stats = useMemo(() => calculateStats(projectsData), []);
 
   const handleSort = (field: 'name' | 'beneficiaries' | 'status') => {
     if (sortBy === field) {
@@ -186,91 +38,8 @@ export default function Home() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case 'In Progress': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Planning': return 'bg-amber-100 text-amber-800 border-amber-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-8 relative z-10"
-        >
-          <motion.div
-            animate={{
-              rotate: 360,
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-              scale: { duration: 1, repeat: Infinity }
-            }}
-            className="w-24 h-24 mx-auto relative"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
-            <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
-              <span className="text-3xl">🌍</span>
-            </div>
-          </motion.div>
-
-          <div className="space-y-4">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
-            >
-              gTek Global Humanitarian CHIPS
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg text-gray-600"
-            >
-              Loading Global Impact Platform...
-            </motion.p>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex justify-center space-x-2"
-          >
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.5, 1, 0.5]
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: i * 0.2
-                }}
-                className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -422,34 +191,15 @@ export default function Home() {
                     change: '+5%'
                   }
                 ].map((stat, index) => (
-                  <motion.div
+                  <StatsCard
                     key={stat.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="group relative"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/50 to-white/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`p-3 rounded-2xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
-                          <span className="text-2xl">{stat.icon}</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                            {stat.change}
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                        <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                          {stat.value}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
+                    title={stat.title}
+                    value={stat.value}
+                    icon={stat.icon}
+                    gradient={stat.gradient}
+                    change={stat.change}
+                    index={index}
+                  />
                 ))}
               </div>
 
@@ -576,59 +326,12 @@ export default function Home() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredAndSortedProjects.map((project, index) => (
-                  <motion.div
+                  <ProjectCard
                     key={project.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ scale: 1.02, y: -5 }}
-                    className="group relative cursor-pointer"
-                    onClick={() => setSelectedProject(project)}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/50 to-white/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                    <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/50 hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-purple-100/20 rounded-full -mr-16 -mt-16"></div>
-
-                      <div className="relative z-10">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className={`p-3 rounded-2xl bg-gradient-to-r ${project.color} shadow-lg`}>
-                            <span className="text-2xl">{project.icon}</span>
-                          </div>
-                          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(project.status)}`}>
-                            {project.status}
-                          </span>
-                        </div>
-
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                          {project.name}
-                        </h3>
-                        <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
-
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-500">Location</span>
-                            <span className="text-sm font-semibold text-gray-900">{project.location}</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-500">Beneficiaries</span>
-                            <span className="text-sm font-semibold text-gray-900">{project.beneficiaries.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-500">Impact</span>
-                            <span className="text-sm font-semibold text-gray-900">{project.impact}</span>
-                          </div>
-                        </div>
-
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                        >
-                          View Full Details
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
+                    project={project}
+                    index={index}
+                    onClick={setSelectedProject}
+                  />
                 ))}
               </div>
             </motion.div>
